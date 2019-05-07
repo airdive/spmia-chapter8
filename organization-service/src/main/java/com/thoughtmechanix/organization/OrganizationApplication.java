@@ -15,7 +15,7 @@ import javax.servlet.Filter;
 @EnableEurekaClient
 @EnableCircuitBreaker
 @EnableBinding(Source.class)
-public class Application {
+public class OrganizationApplication {
     @Bean
     public Filter userContextFilter() {
         UserContextFilter userContextFilter = new UserContextFilter();
@@ -23,6 +23,6 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(OrganizationApplication.class, args);
     }
 }
