@@ -10,8 +10,8 @@ spring:
             content-type: application/json
       kafka:
         binder:
-          zkNodes: localhost
-          brokers: localhost
+          zkNodes: 192.168.5.43:2181
+          brokers: 192.168.5.43:9092   # localhost
 
 # 在git仓库的属性文件中配置以下属性，可以让本地属性覆盖远程属性
 # spring.cloud.config.allow-override: true
@@ -39,6 +39,8 @@ logging:
     com.netflix: WARN
     org.springframework.web: WARN
     com.thoughtmechanix: DEBUG
+    org.springframework: INFO
+
 
 
 eureka:

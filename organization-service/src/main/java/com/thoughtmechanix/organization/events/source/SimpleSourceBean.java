@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.messaging.Source;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
@@ -14,21 +15,24 @@ import org.springframework.stereotype.Component;
 public class SimpleSourceBean {
     private Source source;
 
+    private MessageChannel output;
+
     private static final Logger logger = LoggerFactory.getLogger(SimpleSourceBean.class);
 
     @Autowired
-    public SimpleSourceBean(Source source){
-        this.source = source;
+    public SimpleSourceBean(MessageChannel output){
+        this.output = output;
     }
 
     public void publishOrgChange(String action,String orgId){
        logger.debug("Sending Kafka message {} for Organization Id: {}", action, orgId);
+       logger.debug("output = "+output);
         OrganizationChangeModel change =  new OrganizationChangeModel(
                 OrganizationChangeModel.class.getTypeName(),
                 action,
                 orgId,
                 UserContext.getCorrelationId());
 
-        source.output().send(MessageBuilder.withPayload(change).build());
+        output.send(MessageBuilder.withPayload(change).build());
     }
 }
