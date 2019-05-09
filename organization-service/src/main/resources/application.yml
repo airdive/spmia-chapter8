@@ -8,12 +8,20 @@ spring:
         output:
             destination:  orgChangeTopic
             content-type: application/json
+            producer:
+              partitionKeyExpression: payload.organizationId
+              partitionCount: 3
+              partitionKeyExtractorName: customPartitionKeyExtractor
+              partitionSelectorName: customPartitionSelector
+
       kafka:
         binder:
           zkNodes: 192.168.5.43:2181
           brokers: 192.168.5.43:9092   # localhost
+          auto-create-topics: true    # 默认为true，binder会自动创建topics
+          auto-add-partitions: true   # 默认false，设置为true时binder会根据需要创建partitions
 
-# 在git仓库的属性文件中配置以下属性，可以让本地属性覆盖远程属性
+  # 在git仓库的属性文件中配置以下属性，可以让本地属性覆盖远程属性
 # spring.cloud.config.allow-override: true
 # spring.cloud.config.override-none: true
 # spring.cloud.config.override-system-properties: false
