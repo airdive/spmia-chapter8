@@ -82,6 +82,23 @@
                             </resources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-jar</id>
+                        <!-- here the phase you need -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/dockerfile</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/target</directory>
+                                    <include>${project.build.finalName}.jar</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -91,21 +108,47 @@
                 <configuration>
                     <contextDirectory>${basedir}/target/dockerfile</contextDirectory>
                     <dockerConfigFile>${basedir}/target/dockerfile</dockerConfigFile>
+                    <dockerInfoDirectory>${basedir}/target/dockerfile</dockerInfoDirectory>
                     <username>liuisdocker</username>
                     <password>9980aa</password>
                     <repository>${docker.image.name}</repository>
                     <tag>${docker.image.tag}</tag>
-                    <tag>latest</tag>
-                    <buildArgs>
-                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-                    </buildArgs>
+                    <!--<buildArgs>-->
+                        <!--<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>-->
+                    <!--</buildArgs>-->
                 </configuration>
                 <executions>
                     <execution>
                         <id>default</id>
                         <phase>package</phase>
+                        <configuration>
+                            <tag>latest</tag>
+                        </configuration>
                         <goals>
                             <goal>build</goal>
+                            <goal>tag</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>tag</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <tag>${docker.image.tag}</tag>
+                            <tag>latest</tag>
+                        </configuration>
+                        <goals>
+                            <goal>tag</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>push</id>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <tag>${docker.image.tag}</tag>
+                            <tag>latest</tag>
+                        </configuration>
+                        <goals>
                             <goal>push</goal>
                         </goals>
                     </execution>
